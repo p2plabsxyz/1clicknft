@@ -53,3 +53,6 @@ After uploading your NFT data to IPFS, nft.storage returns a [CID](https://docs.
 ## License
 
 1clickNFT is licensed under the [MIT License](https://github.com/akhileshthite/1clicknft/blob/main/LICENSE).
+
+<hr>
+Don't forget to leave a star ⭐️ ~ <a href="https://twitter.com/p2plabs_xyz" target="_blank"><img src="https://img.shields.io/twitter/follow/p2plabs_xyz?style=social" alt="twitter" /></a>
