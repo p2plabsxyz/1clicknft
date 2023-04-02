@@ -7,6 +7,11 @@
 	"engines": {
 		"vscode": "^1.65.0"
 	},
+	"author": {
+		"name": "P2P Labs",
+		"email": "contact@p2plabs.xyz",
+		"url": "https://twitter.com/p2plabs_xyz"
+	},
 	"categories": [
 		"Other"
 	],
@@ -32,7 +37,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/akhileshthite/1clicknft.git"
+		"url": "https://github.com/p2plabsxyz/1clicknft.git"
 	},
 	"scripts": {
 		"lint": "eslint .",
