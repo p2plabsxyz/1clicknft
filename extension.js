@@ -4,6 +4,7 @@ const { NFTStorage } = require("nft.storage");
 const dotenv = require("dotenv");
 const { selectFolder } = require("./options");
 const { getFilesFromPath } = require("files-from-path");
+const fs = require("fs");
 
 // Environment variable paths
 const folderPath = __dirname + "/.folderPath.env";
@@ -12,8 +13,9 @@ const apiToken = __dirname + "/.env";
 dotenv.config({ path: apiToken });
 
 // nft.storage API token
-const token = process.env.API_TOKEN;
-const client = new NFTStorage({ token });
+function getToken() {
+  return process.env.API_TOKEN;
+}
 
 // Get files from path
 async function getFiles(path) {
@@ -28,10 +30,47 @@ async function getFiles(path) {
   return files;
 }
 
+// Validate nft.storage API token
+function isValidNFTStorageApiKey(apiKey) {
+  const pattern = /^eyJ[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/;
+  return pattern.test(apiKey);
+}
+
+// Set nft.storage API token
+async function setApiToken() {
+  const userToken = await vscode.window.showInputBox({
+    placeHolder: "Enter your nft.storage API token",
+    prompt: "API Token",
+    ignoreFocusOut: true,
+  });
+
+  if (userToken && isValidNFTStorageApiKey(userToken)) {
+    process.env.API_TOKEN = userToken;
+    try {
+      fs.writeFileSync(apiToken, `API_TOKEN=${userToken}`);
+      vscode.window.showInformationMessage("API token saved!");
+      // Set nft.storage API token
+      const client = new NFTStorage({ token: getToken() });
+    } catch (e) {
+      console.log(e);
+    }
+  } else {
+    vscode.window.showWarningMessage(
+      "Invalid API key. Please enter a valid nft.storage API key."
+    );
+  }
+}
+
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
+  // Set nft.storage API token
+  context.subscriptions.push(
+    vscode.commands.registerCommand("nft.token", async () => {
+      await setApiToken();
+    })
+  );
   // Select folder
   context.subscriptions.push(
     vscode.commands.registerCommand("nft.select", async () => {
@@ -53,17 +92,35 @@ function activate(context) {
           let upload = async () => {
             // Get files
             const files = await getFiles(path);
+            // Set nft.storage API token
+            const client = new NFTStorage({ token: getToken() });
             // Upload to IPFS and return a CID
-            const cid = await client.storeDirectory(files);
-            progress.report({ increment: 100 });
-            const result = await vscode.window.showInformationMessage(
-              `Successfully uploaded! Here's the IPFS CID of your NFT data: ${cid}`,
-              "Open the link"
-            );
-            if (result === "Open the link") {
-              vscode.env.openExternal(
-                vscode.Uri.parse(`https://nftstorage.link/ipfs/${cid}/`)
+            try {
+              const cid = await client.storeDirectory(files);
+              progress.report({ increment: 100 });
+              const result = await vscode.window.showInformationMessage(
+                `Successfully uploaded! Here's the IPFS CID of your NFT data: ${cid}`,
+                "Open the link"
               );
+              if (result === "Open the link") {
+                vscode.env.openExternal(
+                  vscode.Uri.parse(`https://nftstorage.link/ipfs/${cid}/`)
+                );
+              }
+            } catch (e) {
+              const message =
+                "Please submit your valid nft.storage API token using the 'nft.token' command before uploading the data. Instructions are provided on the extension homepage.";
+              const action = {
+                title: "Set API token",
+                command: "nft.token",
+              };
+              const selectedAction = await vscode.window.showWarningMessage(
+                message,
+                action
+              );
+              if (selectedAction === action) {
+                await vscode.commands.executeCommand("nft.token");
+              }
             }
           };
           await upload();
