@@ -20,7 +20,27 @@ Open command palette
 - Windows & Linux: `Ctrl + Shift + P`
 - MacOS: `Command + Shift + P`
 
-### 1. Select the folder
+### 1. Submit nft.storage API key
+
+First, generate the nft.storage API key:
+
+- Go to [nft.storage](https://nft.storage/) and Sign In.
+- Click on API Keys and click on New Key.
+- Copy the API Token and paste it in the input field.
+
+Now, to enter your nft.storage API token, type `nft.token` command.
+
+<img align="center" src="/images/token_command.png"></img>
+
+Paste the copied nft.storage API token here:
+
+<img align="center" src="/images/enter_token.png"></img>
+
+On entering the API key, the "API token saved!" popup will appear.
+
+<img align="center" src="/images/token_saved.png"></img>
+
+### 2. Select the folder
 
 Select the folder of your NFT data by using `nft.select` command.
 
@@ -30,7 +50,7 @@ After selecting the folder, the "Folder selected!" popup will appear.
 
 <img align="center" src="/images/folder_selected.png"></img>
 
-### 2. upload to IPFS
+### 3. upload to IPFS
 
 Now, upload your NFT data by using `nft.upload` command.
 
@@ -44,11 +64,7 @@ After uploading successfully, it'll show the IPFS `CID` of your NFT data and an 
 
 <img align="center" src="/images/uploaded.png"></img>
 
-## Working
-
-1clickNFT uses nft.storage, basically it makes the content available over IPFS and permanently pins the content with the help of [Filecoin](https://filecoin.io/) infrastructure. Read more about nft.storage and how it works [here](https://nft.storage/docs/).
-
-After uploading your NFT data to IPFS, nft.storage returns a [CID](https://docs.ipfs.io/concepts/content-addressing/) `Qmeq5NxNX644KHNji..`, which is a hash for an array of files stored on IPFS, and that later is combined with IPFS gateway link `https://nftstorage.link/ipfs/` to access your NFT data.
+If you have any queries, then create a [discussion thread](https://github.com/p2plabsxyz/support/discussions).
 
 ## License
 
